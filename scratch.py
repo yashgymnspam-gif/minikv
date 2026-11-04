@@ -1,37 +1,20 @@
-class Store:
-    def __init__(self):
-        self._data = {}
+import time
+from dataclasses import dataclass
 
-    def set(self, key, value):
-        self._data[key] = value
 
-    def get(self, key):
-        return self._data.get(key)
+@dataclass
+class Entry:
+    value: str
+    expires_at: float | None = None
 
-    def delete(self, key):
-        if key in self._data:
-            del self._data[key]
-            return True
+    @property
+    def is_expired(self):
+        if self.expires_at is not None:
+            return time.time() >= self.expires_at
         return False
 
-    def __len__(self):
-        return len(self._data)
 
-    def __contains__(self, key):
-        return key in self._data
-
-    def __repr__(self):
-        return f"Store({len(self._data)} keys)"
-
-    def __setitem__(self, key, value):
-        self._data[key] = value
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-
-s = Store()
-s["name"] = "Yash"
-print(s["name"])
-print(s.get("missing"))
-print(s["missing"])
+e1 = Entry("a")
+e2 = Entry("b", time.time() + 100)
+e3 = Entry("c", time.time() - 1)
+e4 = Entry("d", time.time() + 1)
